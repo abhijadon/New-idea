@@ -1,30 +1,15 @@
-// const express = require("express");
-// const connectToMongo = require("./db");
-// const cors = require("cors");
-// const app = express();
-// connectToMongo();
-// const Port = 8001;
-// app.use(express.json());
-// app.use(cors());
-
-// //  Available Routes
-
-// app.listen(Port, () => {
-//   console.log(`Connected to http://localhost:${Port}`);
-// });
-
 const express = require("express");
-const connectToMongo = require("./db");
-
-connectToMongo();
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = 5000;
+app.use(bodyParser.json());
+app.use(cors({ origin: "http://localhost:3000" }));
 
-app.use(express.json());
-
-// Available api routes
-app.use("api/form", require("./routes/form"));
+//Api routes are available
+app.use("/api", require("./routes/sheet"));
+app.use("/api", require("./routes/form"));
 
 //connect to localhost
 
