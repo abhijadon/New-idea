@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const For = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
-  const notify = () => toast("Your data was successfully added!");
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
   const handleChange = (e) => {
     if (e.target.name === "name") {
       setName(e.target.value);
@@ -15,20 +16,59 @@ const For = () => {
       setMobile(e.target.value);
     }
   };
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!values.name) {
+      errors.name = "!Name is required";
+    }
+
+    if (!values.email) {
+      errors.email = "Email is required!";
+    } else if (!regex.test(values.email)) {
+      errors.email = "This is not a valid email format!";
+    }
+    if (!values.mobile) {
+      errors.mobile = "Mobile is required!";
+    } else if (values.mobile.length < 10) {
+      errors.mobile = "More than 10 digits";
+    } else if (values.mobile.length > 15) {
+      errors.mobile = "less than 15";
+    }
+    return errors;
+  };
+
+  useEffect(() => {
+    console.log(formErrors);
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      console.log(name);
+    }
+  }, [formErrors]);
 
   const Submit = async (e) => {
     e.preventDefault();
+    setIsSubmit(true);
+    setFormErrors(validate(name));
     const data = { name, email, mobile };
 
-    let res = await fetch("http://localhost:5000/form", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    let response = await res.json();
-    console.log(response);
+    let res = await Promise.all([
+      fetch("http://localhost:5000/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+      fetch("http://localhost:5000/sheet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+    ]);
+    
     setEmail("");
     setName("");
     setMobile("");
@@ -61,6 +101,11 @@ const For = () => {
         />
         {/* Same as */}
         <ToastContainer />
+        {Object.keys(formErrors).length === 0 && isSubmit ? (
+          <div className="ui message success">Signed in successfully</div>
+        ) : (
+          <pre>{(name, undefined)}</pre>
+        )}
         <form className="w-full form" onSubmit={Submit} method="POST">
           <div className="flex flex-wrap mx-10 mb-2 mt-4">
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -70,6 +115,9 @@ const For = () => {
               >
                 Name
               </label>
+              <p className="text-red-600 absolute ml-48  text-sm">
+                {formErrors.name}
+              </p>
 
               <input
                 name="name"
@@ -115,10 +163,7 @@ const For = () => {
                 placeholder="Mobile"
               />
               <div className="relative md:mt-2 md:ml-10 py-6">
-                <button
-                  onClick={notify}
-                  className="cursor-pointer bg-[#009933] hover:bg-green-700 py-2 px-4 rounded text-white"
-                >
+                <button className="cursor-pointer bg-[#009933] hover:bg-green-700 py-2 px-4 rounded text-white">
                   Proceed to pay
                 </button>
               </div>

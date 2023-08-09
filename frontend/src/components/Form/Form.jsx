@@ -1,44 +1,119 @@
 import React, { useState, useEffect } from "react";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Form = () => {
-  const [formValues, setFormValues] = useState([]);
+  const [certificate, setCertificate] = useState("");
+  const [university, setUniversity] = useState("");
+  const [name, setName] = useState("");
+  const [mothername, setMothername] = useState("");
+  const [fathername, setFathername] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [alternate, setAlternate] = useState("");
+  const [dob, setDob] = useState("");
+  const [course, setCourse] = useState("");
+  const [subcourse, setSubcourse] = useState("");
+  const [enrollment, setEnrollment] = useState("");
+  const [passingyear, setPassingyear] = useState("");
+  const [house, setHouse] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [postoffice, setPostoffice] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    if (e.target.name === "name") {
+      setName(e.target.value);
+    } else if (e.target.name === "email") {
+      setEmail(e.target.value);
+    } else if (e.target.name === "mobile") {
+      setMobile(e.target.value);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormErrors(validate(formValues));
+    setFormErrors(validate(name));
     setIsSubmit(true);
 
     const data = {
-      setFormValues,
+      name,
+      email,
+      mobile,
+      certificate,
+      university,
+      country,
+      fathername,
+      mothername,
+      alternate,
+      dob,
+      passingyear,
+      enrollment,
+      city,
+      state,
+      zipcode,
+      postoffice,
+      house,
+      course,
+      subcourse,
     };
 
-    await fetch("http://localhost:5000/api/sheet", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Create Success: ", data);
-      })
-      .catch((error) => {
-        console.error("ERROR: ", error);
-      });
+    await Promise.all([
+      fetch("http://localhost:5000/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+      fetch("http://localhost:5000/sheet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+    ]);
+    setUniversity("");
+    setCertificate("");
+    setCity("");
+    setAlternate("");
+    setCity("");
+    setCountry("");
+    setCourse("");
+    setDob("");
+    setEnrollment("");
+    setFathername("");
+    setHouse("");
+    setMothername("");
+    setPassingyear("");
+    setPostoffice("");
+    setState("");
+    setSubcourse("");
+    setUniversity("");
+    setZipcode("");
+    setEmail("");
+    setName("");
+    setMobile("");
+    toast("Your form data was success!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   useEffect(() => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
+      console.log(name);
     }
   }, [formErrors]);
   const validate = (values) => {
@@ -56,10 +131,8 @@ const Form = () => {
     }
     if (!values.mobile) {
       errors.mobile = "Mobile is required!";
-    }
-    else if (values.mobile.length < 10) {
+    } else if (values.mobile.length < 10) {
       errors.mobile = "More than 10 digits";
-
     } else if (values.mobile.length > 15) {
       errors.mobile = "less than 15";
     }
@@ -68,6 +141,20 @@ const Form = () => {
 
   return (
     <section className="md:w-full min-w-full">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {/* Same as */}
+      <ToastContainer />
       <div className="md:mx-auto rounded-lg bg-[#ffffff] shadow-2xl drop-shadow-xl mt-4 md:w-[70%]">
         <div className="mt-6 ml-4 mr-10 md:ml-20">
           <div className="text-center">
@@ -78,11 +165,11 @@ const Form = () => {
           </div>
         </div>
         {Object.keys(formErrors).length === 0 && isSubmit ? (
-          <div className="ui message success">Signed in successfully</div>
+          <div></div>
         ) : (
-          <pre>{(formValues, undefined)}</pre>
+          <pre>{(name, undefined)}</pre>
         )}
-        <form className="w-full form" onSubmit={handleSubmit}>
+        <form className="w-full form" onSubmit={handleSubmit} method="POST">
           {/* ==========section-1=========== */}
 
           <div className="">
@@ -99,17 +186,17 @@ const Form = () => {
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-state"
+                htmlFor="university"
               >
                 University
               </label>
               <div className="relative">
                 <select
-                  name="University"
-                  value={formValues.username}
+                  name="university"
+                  value={university}
                   onChange={handleChange}
                   className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-state"
+                  id="university"
                 >
                   <option>New Mexico</option>
                   <option>Missouri</option>
@@ -129,17 +216,17 @@ const Form = () => {
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-state"
+                htmlFor="certificate"
               >
                 Certificate
               </label>
               <div className="relative">
                 <select
-                  name="Certificate"
-                  value={formValues.username}
+                  name="certificate"
+                  value={certificate}
                   onChange={handleChange}
                   className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-state"
+                  id="university"
                 >
                   <option>New Mexico</option>
                   <option>Missouri</option>
@@ -175,36 +262,35 @@ const Form = () => {
               </p>
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-city"
+                htmlFor="name"
               >
                 Name
               </label>
 
               <input
                 name="name"
-                value={formValues.username}
+                value={name}
                 onChange={handleChange}
                 className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-city"
+                id="name"
                 type="text"
                 placeholder="Name"
               />
             </div>
 
-
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-city"
+                htmlFor="mothername"
               >
                 Mother Name
               </label>
               <input
-                name="MotherName"
-                value={formValues.username}
+                name="mothername"
+                value={mothername}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-city"
+                id="mothername"
                 type="text"
                 placeholder="Mother-Name"
               />
@@ -212,16 +298,16 @@ const Form = () => {
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-zip"
+                htmlFor="fathername"
               >
                 Father Name
               </label>
               <input
-                name="FatherName"
-                value={formValues.username}
+                name="fathername"
+                value={fathername}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-zip"
+                id="fathername"
                 type="text"
                 placeholder="FatherName"
               />
@@ -232,70 +318,71 @@ const Form = () => {
               </p>
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-zip"
+                htmlFor="mobile"
               >
                 Mobile number
               </label>
               <input
                 name="mobile"
-                value={formValues.mobile}
+                value={mobile}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-zip"
+                id="mobile"
                 type="text"
                 placeholder="Enter your number"
               />
             </div>
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
-              <p className="text-red-600 absolute ml-48 text-sm">{formErrors.email}</p>
+              <p className="text-red-600 absolute ml-48 text-sm">
+                {formErrors.email}
+              </p>
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-zip"
+                htmlFor="email"
               >
                 Email-id
               </label>
               <input
                 name="email"
-                value={formValues.username}
+                value={email}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-zip"
-                type="text"
+                id="email"
+                type="email"
                 placeholder="Enter your email"
               />
-
             </div>
 
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-zip"
+                htmlFor="alternate"
               >
-                alternate number
+                Alternate number
               </label>
               <input
-                name="AlternateNumber"
-                value={formValues.username}
+                name="alternate"
+                value={alternate}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-zip"
-                type="text"
+                id="alternate"
+                type="number"
                 placeholder="Enter your alternate-number"
               />
             </div>
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-zip"
+                htmlFor="dob"
               >
                 Date of Birth
               </label>
               <input
-                name="DOB"
-                value={formValues.username}
+                name="dob"
+                value={dob}
                 onChange={handleChange}
                 className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-zip"
+                id="dob"
                 type="date"
                 placeholder="Enter your DOB"
               />
@@ -316,16 +403,16 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-city"
+                  htmlFor="course"
                 >
                   Course
                 </label>
                 <input
-                  name="Course"
-                  value={formValues.username}
+                  name="course"
+                  value={course}
                   onChange={handleChange}
                   className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-city"
+                  id="course"
                   type="text"
                   placeholder="Enter your course"
                 />
@@ -334,16 +421,16 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-zip"
+                  htmlFor="subcourse"
                 >
                   Sub-course
                 </label>
                 <input
-                  name="SubCourse"
-                  value={formValues.username}
+                  name="subcourse"
+                  value={subcourse}
                   onChange={handleChange}
                   className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-zip"
+                  id="subcourse"
                   type="text"
                   placeholder="Enter your subcourse"
                 />
@@ -351,35 +438,35 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-zip"
+                  htmlFor="enrollment"
                 >
                   Enrollment number
                 </label>
                 <input
-                  name="ErollmentNumber"
-                  value={formValues.username}
+                  name="enrollment"
+                  value={enrollment}
                   onChange={handleChange}
                   className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-zip"
-                  type="text"
+                  id="enrollment"
+                  type="number"
                   placeholder="Enter your alternate-number"
                 />
               </div>
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-zip"
+                  htmlFor="passingyear"
                 >
                   Passing year
                 </label>
                 <input
-                  name="PassingYear"
-                  value={formValues.username}
+                  name="passingyear"
+                  value={passingyear}
                   onChange={handleChange}
                   className="appearance-none block w-full  text-gray-700 border border-gray-400 rounded py-1.5  px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-zip"
+                  id="passingyear"
                   type="date"
-                  placeholder="Enter your DOB"
+                  placeholder="Enter your Passing year"
                 />
               </div>
             </div>
@@ -399,34 +486,34 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-city"
+                  htmlFor="house"
                 >
                   House No./apartment/street
                 </label>
                 <input
-                  name="HouseNumber"
-                  value={formValues.username}
+                  name="house"
+                  value={house}
                   onChange={handleChange}
                   className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-city"
+                  id="house"
                   type="text"
-                  placeholder="Enter your house-no."
+                  placeholder="Enter your house."
                 />
               </div>
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-state"
+                  htmlFor="state"
                 >
                   State
                 </label>
                 <div className="relative">
                   <select
-                    name="State"
-                    value={formValues.username}
+                    name="state"
+                    value={state}
                     onChange={handleChange}
                     className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="grid-state"
+                    id="state"
                   >
                     <option>New Mexico</option>
                     <option>Missouri</option>
@@ -446,17 +533,17 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-state"
+                  htmlFor="city"
                 >
                   City
                 </label>
                 <div className="relative">
                   <select
-                    name="City"
-                    value={formValues.username}
+                    name="city"
+                    value={city}
                     onChange={handleChange}
                     className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="grid-state"
+                    id="city"
                   >
                     <option>New Mexico</option>
                     <option>Missouri</option>
@@ -476,16 +563,16 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-city"
+                  htmlFor="zipcode"
                 >
                   Zipcode
                 </label>
                 <input
-                  name="Zipcode"
-                  value={formValues.username}
+                  name="zipcode"
+                  value={zipcode}
                   onChange={handleChange}
                   className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-city"
+                  id="zipcode"
                   type="text"
                   placeholder="Enter your zipcode"
                 />
@@ -493,16 +580,16 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-city"
+                  htmlFor="postoffice"
                 >
                   post-office
                 </label>
                 <input
-                  name="PostOffice"
-                  value={formValues.username}
+                  name="postoffice"
+                  value={postoffice}
                   onChange={handleChange}
                   className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-city"
+                  id="postoffice"
                   type="text"
                   placeholder="Enter your postoffice"
                 />
@@ -510,16 +597,16 @@ const Form = () => {
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
                 <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                  htmlFor="grid-city"
+                  htmlFor="country"
                 >
-                  country
+                  Country
                 </label>
                 <input
-                  name="Country"
-                  value={formValues.username}
+                  name="country"
+                  value={country}
                   onChange={handleChange}
                   className="appearance-none block w-full text-gray-700 border border-gray-400 rounded py-1.5 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-city"
+                  id="country"
                   type="text"
                   placeholder="Enter your country "
                 />
