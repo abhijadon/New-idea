@@ -25,7 +25,7 @@ function App() {
       <Header />
       <Navbar />
       <main>
-        <Form />  
+        <Form />
       </main>
       <Popup trigger={buttonPop} setTrigger={setButtonPop}>
         <Pop />
