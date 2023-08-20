@@ -32,13 +32,57 @@ const Form = () => {
     } else if (e.target.name === "mobile") {
       setMobile(e.target.value);
     }
+    else if (e.target.name === "university") {
+      setUniversity(e.target.value);
+    }
+    else if (e.target.name === "certificate") {
+      setCertificate(e.target.value);
+    }
+    else if (e.target.name === "fathername") {
+      setFathername(e.target.value);
+    }
+    else if (e.target.name === "mothername") {
+      setMothername(e.target.value);
+    }
+    else if (e.target.name === "alternate") {
+      setAlternate(e.target.value);
+    }
+    else if (e.target.name === "dob") {
+      setDob(e.target.value);
+    }
+    else if (e.target.name === "course") {
+      setCourse(e.target.value);
+    }
+    else if (e.target.name === "subcourse") {
+      setSubcourse(e.target.value);
+    }
+    else if (e.target.name === "enrollment") {
+      setEnrollment(e.target.value);
+    }
+    else if (e.target.name === "passingyear") {
+      setPassingyear(e.target.value);
+    }
+    else if (e.target.name === "house") {
+      setHouse(e.target.value);
+    }
+    else if (e.target.name === "state") {
+      setState(e.target.value);
+    }
+    else if (e.target.name === "city") {
+      setCity(e.target.value);
+    }
+    else if (e.target.name === "zipcode") {
+      setZipcode(e.target.value);
+    }
+    else if (e.target.name === "postoffice") {
+      setPostoffice(e.target.value);
+    }
+    else if (e.target.name === "country") {
+      setCountry(e.target.value);
+    }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormErrors(validate(name));
-    setIsSubmit(true);
-
     const data = {
       name,
       email,
@@ -60,6 +104,9 @@ const Form = () => {
       course,
       subcourse,
     };
+    e.preventDefault();
+    setFormErrors(validate(data));
+    setIsSubmit(true);
 
     await Promise.all([
       fetch("http://localhost:5000/form", {
@@ -76,7 +123,9 @@ const Form = () => {
         },
         body: JSON.stringify(data),
       }),
+
     ]);
+
     setUniversity("");
     setCertificate("");
     setCity("");
@@ -98,7 +147,7 @@ const Form = () => {
     setEmail("");
     setName("");
     setMobile("");
-    toast("Your form data was success!", {
+    toast.success('🦄 Your data sent was successfully !', {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -111,9 +160,8 @@ const Form = () => {
   };
 
   useEffect(() => {
-    console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(name);
+      console.warn();
     }
   }, [formErrors]);
   const validate = (values) => {
@@ -167,7 +215,7 @@ const Form = () => {
         {Object.keys(formErrors).length === 0 && isSubmit ? (
           <div></div>
         ) : (
-          <pre>{(name, undefined)}</pre>
+          <pre>{(undefined)}</pre>
         )}
         <form className="w-full form" onSubmit={handleSubmit} method="POST">
           {/* ==========section-1=========== */}
