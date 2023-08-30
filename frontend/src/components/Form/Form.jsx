@@ -123,6 +123,13 @@ const Form = () => {
         },
         body: JSON.stringify(data),
       }),
+      fetch("http://localhost:5000/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
 
     ]);
 
@@ -246,9 +253,9 @@ const Form = () => {
                   className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="university"
                 >
-                  <option>New Mexico</option>
-                  <option>Missouri</option>
-                  <option>Texas</option>
+                  <option>--Select Option--</option>
+                  <option>Migration Certificate</option>
+                  <option>Other</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg
@@ -276,9 +283,10 @@ const Form = () => {
                   className="block appearance-none w-full border border-gray-400 text-gray-700 py-1.5 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="university"
                 >
-                  <option>New Mexico</option>
-                  <option>Missouri</option>
-                  <option>Texas</option>
+                  <option>--Select Option--</option>
+                  <option>Online/Distance degree</option>
+                  <option>Migration Certificate</option>
+                  <option>Other</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg
